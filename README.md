@@ -1,3 +1,7 @@
+# Health.py 
+
+This project analyzes thyroid hormone data using PCA and KNN. The goal is to identify patterns between hormone levels and help detect hypothyroidism based on those patterns.
+
 ## Principal Component Analysis (PCA)
 
 ### Overview:
