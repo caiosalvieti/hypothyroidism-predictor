@@ -1,11 +1,11 @@
-Principal Component Analysis (PCA)
+## Principal Component Analysis (PCA)
 
-Overview:
+### Overview:
 Principal Component Analysis (PCA) is an unsupervised statistical technique used to reduce data dimensionality while retaining the maximum amount of variability. Its interpretation requires a critical approach, especially when analyzing principal components and their corresponding loadings, which indicate the weight of each variable within each component.
 
 According to Malinowski’s criteria, variables with loadings greater than or equal to 0.7 are considered significant.
 
-Graphical Analysis
+### Graphical Analysis
 
 Graph 1: TSH vs. TT4 with Age
 The relationship between TSH and TT4 demonstrates distinct patterns: high TT4 levels are typically associated with low TSH levels, and vice versa. Some patients exhibit balanced hormone levels. Age introduces an additional dimension, though no clear pattern is observed.
@@ -16,12 +16,13 @@ High T4U values do not consistently correspond with changes in TSH levels. Certa
 Graph 3: T3 vs. FTI with Age
 There is a strong correlation between T3 and FTI. Most patients cluster around FTI ≈ 300 and T3 ≈ 6, with increases in one often mirrored by increases in the other.
 
-Component Variance
+### Component Variance
+
 Component variance estimation is a statistical method that measures the variability within a system. This technique provides valuable insights when analyzing randomly selected items across different topics.
 
 In the plotted data, a significant difference is observed between PC1 and PC6. This suggests that variations are most informative up to PC3, effectively highlighting specific component measures.
 
-PCA Analysis
+## PCA Analysis
 
 PCA Summary - Part 1:
 PC1: Significant variables are T3 (0.789) and TT4 (0.920). Positive PC1 values indicate high T3 and TT4 levels, while negative values suggest low levels of these hormones.
@@ -53,7 +54,7 @@ PC3: Age is the most significant variable (0.945).
 PC4: The significant variable is TSH (0.768).
 This plot primarily demonstrates the correlation between Age and TSH. Higher levels of TSH appear to be associated with patient age. Notably, patients with hypothyroidism show diverse age ranges and varying TSH levels.
 
-K - Nearest Neighbors
+## K - Nearest Neighbors
 
 K-Nearest Neighbors (KNN) is a classification algorithm that operates by grouping similar data points located near each other based on proximity.
 
@@ -61,26 +62,32 @@ Method: The KNN algorithm finds the K nearest neighbors within the selected grou
 Characteristics: KNN is easy to implement, adaptive, and simple but does not scale very well with larger data sets, leading to a slow process and a significant curse of dimensionality.
 	Next steps numbers Y
 
-Accuracy: 0.9851116625310173 - This number represents the overall accuracy of the model, indicating that 98.51116625310173% of the predictions were correct.
+### Accuracy: 0.9851116625310173 
+- This number represents the overall accuracy of the model, indicating that 98.51116625310173% of the predictions were correct.
 
-Confusion Matrix:
+### Confusion Matrix:
 
-[[379, 0],
- [6, 18]]
+### [[379, 0],
+ ### [6, 18]]
 
 The confusion matrix is a 2x2 table that shows the performance of a classification model. In this case, the first row represents the true positives (379) and false negatives (0), while the second row represents the false positives (6) and true negatives (18).
 
-Precision: 0.985343688569495 - Precision is calculated as the number of true positives divided by the sum of true positives and false positives. In this context, it means that 98.5343688569495% of the predicted positives were actually positive.
+### Precision: 0.985343688569495
+- Precision is calculated as the number of true positives divided by the sum of true positives and false positives. In this context, it means that 98.5343688569495% of the predicted positives were actually positive.
 
-Recall: 0.9851116625310173 - Recall is calculated as the number of true positives divided by the sum of true positives and false negatives. This indicates that 98.51116625310173% of the actual positives were correctly identified by the model.
+### Recall: 0.9851116625310173 
+- Recall is calculated as the number of true positives divided by the sum of true positives and false negatives. This indicates that 98.51116625310173% of the actual positives were correctly identified by the model.
 
-F1 Score: 0.9841066719127857 - The F1 score is the harmonic mean of precision and recall, providing a balance between the two metrics. It suggests that the model has a high level of both precision and recall.
+### F1 Score: 0.9841066719127857 
+- The F1 score is the harmonic mean of precision and recall, providing a balance between the two metrics. It suggests that the model has a high level of both precision and recall.
 
-MCC: 0.859250655112749 - Matthews Correlation Coefficient (MCC) is a measure of the quality of binary classification, considering all four categories of the confusion matrix. A value of 0.859250655112749 indicates a strong correlation between the predicted and actual labels.
+### MCC: 0.859250655112749 
+- Matthews Correlation Coefficient (MCC) is a measure of the quality of binary classification, considering all four categories of the confusion matrix. A value of 0.859250655112749 indicates a strong correlation between the predicted and actual labels.
 
 UNDERSAMPLING AND OVERSAMPLING
 
 . . .
 
-Conclusion
-PCA effectively identifies key variables contributing to data variability. The consistent significance of T3, TT4, and TSH across principal components underscores their critical roles in the dataset, offering valuable insights into patient hormone profiles and potential thyroid-related conditions.
+### Conclusion
+
+
