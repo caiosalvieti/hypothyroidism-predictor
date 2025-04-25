@@ -16,7 +16,7 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
-
+from imblearn.over_sampling import SMOTE
 
 #DATA
 dtthyroid = pd.read_csv("/Users/caiosalvieti/Downloads/hypothyroid.data")
@@ -157,4 +157,56 @@ print(f1)
 mcc = matthews_corrcoef(y_test, y_pred)
 print(mcc)
 
-#oversampling undersampling 
+
+
+# Oversampling
+sm = SMOTE(random_state=42)
+X_res, y_res = sm.fit_resample(X, y)
+
+# split for train and test etc.
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+
+# Scale the features using StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+y_pred = pd.DataFrame(y_pred, columns=['predicted'])
+
+print("after smote")
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy test set:", accuracy)
+
+
+# Nest steps :)
+
+print(confusion_matrix[y_test, y_pred])
+
+confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [0, 1])
+
+cm_display.plot()
+plt.show()
+
+precision = precision_score(y_test, y_pred, average='weighted')
+print(precision)
+
+recal = recall_score(y_test, y_pred, average='weighted')
+print(recal)
+
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f1)
+
+mcc = matthews_corrcoef(y_test, y_pred)
+print(mcc)
+
+
+
+# Undersampling
+
