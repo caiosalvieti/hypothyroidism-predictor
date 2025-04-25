@@ -17,6 +17,7 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
 from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
 
 #DATA
 dtthyroid = pd.read_csv("/Users/caiosalvieti/Downloads/hypothyroid.data")
@@ -54,7 +55,7 @@ sns.jointplot(data=dtt, x="TSH", y="T4U", hue="age", palette='viridis')
 
 sns.jointplot(data=dtt, x="T3", y="FTI", hue="age", palette='viridis')
 
-plt.show()
+#plt.show()
 
 #pca
 
@@ -78,7 +79,7 @@ print(pca.explained_variance_)
 
 dfScree = pd.DataFrame({'var':pca.explained_variance_ratio_,'PC':['PC1','PC2','PC3','PC4','PC5','PC6']})
 sns.barplot(x='PC',y="var",data=dfScree, color="c").set_title('Fig 2. Component Variance');
-plt.show()
+#plt.show()
 
 # Loadings
 loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
@@ -88,22 +89,22 @@ print(loadingsDF)
 # SHOW SHOW SHOW
 sns.scatterplot(data=pca_df, x='PC1', y='PC2', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.1')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC3', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.2')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.3')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC2', y='PC3', hue='target', palette='viridis')
-plt.title('PCA - MAIN P.4')
-plt.show()
-sns.scatterplot(data=pca_df, x='PC2', y='PC4', hue='target', palette='viridis')
+#lt.title('PCA - MAIN P.4')
+#plt.show()
+#sns.scatterplot(data=pca_df, x='PC2', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.5')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC3', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.6')
-plt.show()
+#plt.show()
 
 correlation_matrix = dtt.corr()
 print(correlation_matrix)
@@ -158,7 +159,6 @@ mcc = matthews_corrcoef(y_test, y_pred)
 print(mcc)
 
 
-
 # Oversampling
 sm = SMOTE(random_state=42)
 X_res, y_res = sm.fit_resample(X, y)
@@ -182,9 +182,6 @@ print("after smote")
 accuracy = accuracy_score(y_test, y_pred)
 print("Accuracy test set:", accuracy)
 
-
-# Nest steps :)
-
 print(confusion_matrix[y_test, y_pred])
 
 confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
@@ -206,7 +203,47 @@ print(f1)
 mcc = matthews_corrcoef(y_test, y_pred)
 print(mcc)
 
-
-
 # Undersampling
+rus = RandomUnderSampler(random_state=0)
+X_res, y_res = sm.fit_resample(X, y)
 
+# split for train and test etc.
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2, random_state=42)
+
+# Scale the features using StandardScaler
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+y_pred = pd.DataFrame(y_pred, columns=['predicted'])
+
+print("after under")
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy test set:", accuracy)
+
+
+print(confusion_matrix[y_test, y_pred])
+
+confusion_matrix = metrics.confusion_matrix(y_test, y_pred)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [0, 1])
+
+cm_display.plot()
+plt.show()
+
+precision = precision_score(y_test, y_pred, average='weighted')
+print(precision)
+
+recal = recall_score(y_test, y_pred, average='weighted')
+print(recal)
+
+f1 = f1_score(y_test, y_pred, average='weighted')
+print(f1)
+
+mcc = matthews_corrcoef(y_test, y_pred)
+print(mcc)
