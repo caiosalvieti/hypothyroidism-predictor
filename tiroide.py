@@ -55,7 +55,7 @@ sns.jointplot(data=dtt, x="TSH", y="T4U", hue="age", palette='viridis')
 
 sns.jointplot(data=dtt, x="T3", y="FTI", hue="age", palette='viridis')
 
-#plt.show()
+plt.show()
 
 #pca
 
@@ -89,29 +89,29 @@ print(loadingsDF)
 # SHOW SHOW SHOW
 sns.scatterplot(data=pca_df, x='PC1', y='PC2', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.1')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC3', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.2')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.3')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC2', y='PC3', hue='target', palette='viridis')
-#lt.title('PCA - MAIN P.4')
-#plt.show()
+plt.title('PCA - MAIN P.4')
+plt.show()
 #sns.scatterplot(data=pca_df, x='PC2', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.5')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC3', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.6')
-#plt.show()
+plt.show()
 
 correlation_matrix = dtt.corr()
 print(correlation_matrix)
 plt.figure(figsize=(8, 6))  # Adjust figure size as needed
 sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm")  # Use annot=True for values on heatmap
 plt.title("Correlation Matrix")
-#plt.show()
+plt.show()
 
 
 # Split the data into features (X) and target (y)
