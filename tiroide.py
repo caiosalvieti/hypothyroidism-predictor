@@ -18,6 +18,13 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import matthews_corrcoef
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
+from sklearn import svm
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import roc_curve, auc, precision_recall_curve
+from sklearn.linear_model import LogisticRegression
+
 
 #DATA
 dtthyroid = pd.read_csv("/Users/caiosalvieti/Downloads/hypothyroid.data")
@@ -55,7 +62,7 @@ sns.jointplot(data=dtt, x="TSH", y="T4U", hue="age", palette='viridis')
 
 sns.jointplot(data=dtt, x="T3", y="FTI", hue="age", palette='viridis')
 
-plt.show()
+#plt.show()
 
 #pca
 
@@ -89,29 +96,29 @@ print(loadingsDF)
 # SHOW SHOW SHOW
 sns.scatterplot(data=pca_df, x='PC1', y='PC2', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.1')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC3', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.2')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.3')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC2', y='PC3', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.4')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC2', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.5')
-plt.show()
+#plt.show()
 sns.scatterplot(data=pca_df, x='PC3', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.6')
-plt.show()
+#plt.show()
 
 correlation_matrix = dtt.corr()
 print(correlation_matrix)
 plt.figure(figsize=(8, 6))  # Adjust figure size as needed
 sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm")  # Use annot=True for values on heatmap
 plt.title("Correlation Matrix")
-plt.show()
+#plt.show()
 
 
 # Split the data into features (X) and target (y)
@@ -247,3 +254,195 @@ print(f1)
 
 mcc = matthews_corrcoef(y_test, y_pred)
 print(mcc)
+
+#NEXT SVM, GridSearchcv ,RANDOM FOREST, LOGISTIC REGRESSION, XGBOOST
+
+clf = svm.SVC()
+clf.fit(X_train, y_train)
+y_pred_svm = clf.predict(X_test)
+
+# Define features and target (use the same ones from your project)
+X = dtt[['T3', 'TT4', 'T4U']]
+y = target
+
+# Split the data
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Set up pipeline with scaler + model
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('knn', KNeighborsClassifier())
+])
+
+# Define the hyperparameter grid
+param_grid = {
+    'knn__n_neighbors': [3, 5, 7, 9],
+    'knn__weights': ['uniform', 'distance'],
+    'knn__metric': ['euclidean', 'manhattan']
+}
+
+# GridSearchCV setup
+grid = GridSearchCV(estimator=pipe, param_grid=param_grid, cv=5, scoring='accuracy', verbose=1,   n_jobs=-1)
+
+# Fit the model
+grid.fit(X_train, y_train)
+
+# Best parameters and accuracy
+print("Best parameters found: ", grid.best_params_)
+print("Best cross-validation accuracy: {:.3f}".format(grid.best_score_))
+
+# Evaluate on test set
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, matthews_corrcoef
+
+y_pred_knn = grid.predict(X_test)
+print("Test Accuracy: {:.3f}".format(accuracy_score(y_test, y_pred_knn)))
+print(confusion_matrix(y_test, y_pred_knn))
+print(classification_report(y_test, y_pred_knn))
+print(matthews_corrcoef(y_test, y_pred_knn))
+
+#RF
+# Define your features and target again (or reuse)
+X = dtt[['T3', 'TT4', 'T4U']]
+y = target
+
+# Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Optional: RandomForest doesn’t need scaling, but for consistency:
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('rf', RandomForestClassifier(random_state=42))
+])
+
+# Hyperparameter grid for RandomForest
+param_grid = {
+    'rf__n_estimators': [50, 100, 150],
+    'rf__max_depth': [None, 5, 10],
+    'rf__min_samples_split': [2, 5],
+    'rf__min_samples_leaf': [1, 2],
+    'rf__criterion': ['gini', 'entropy']
+}
+
+# Setup GridSearchCV
+grid_rf = GridSearchCV(estimator=pipe, param_grid=param_grid,  cv=5,  scoring='accuracy', verbose=1, n_jobs=-1)
+
+# Fit
+grid_rf.fit(X_train, y_train)
+
+# Evaluate
+y_pred_rf = grid_rf.predict(X_test)
+
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, matthews_corrcoef
+
+print("Best RandomForest params:", grid_rf.best_params_)
+print("Cross-validated accuracy:", grid_rf.best_score_)
+print("Test set accuracy:", accuracy_score(y_test, y_pred_rf))
+print(confusion_matrix(y_test, y_pred_rf))
+print(classification_report(y_test, y_pred_rf))
+print("MCC:", matthews_corrcoef(y_test, y_pred_rf))
+
+# Save metrics for both models
+results = {
+    'KNN': {
+        'Accuracy': accuracy_score(y_test, y_pred_knn),
+        'MCC': matthews_corrcoef(y_test, y_pred_knn)
+    },
+    'Random Forest': {
+        'Accuracy': accuracy_score(y_test, y_pred_rf),
+        'MCC': matthews_corrcoef(y_test, y_pred_rf)
+    }
+}
+
+# Print a clean comparison table
+print("\nModel Performance Comparison:")
+print(f"{'Model':<15}{'Accuracy':<12}{'MCC':<12}")
+for model, metrics in results.items():
+    print(f"{model:<15}{metrics['Accuracy']:<12.3f}{metrics['MCC']:<12.3f}")
+
+models = list(results.keys())
+accuracies = [results[m]['Accuracy'] for m in models]
+mccs = [results[m]['MCC'] for m in models]
+
+x = range(len(models))
+width = 0.35
+
+plt.figure(figsize=(8, 5))
+plt.bar(x, accuracies, width, label='Accuracy')
+plt.bar([i + width for i in x], mccs, width, label='MCC')
+
+plt.xlabel("Model")
+plt.ylabel("Score")
+plt.title("Model Comparison: Accuracy and MCC")
+plt.xticks([i + width / 2 for i in x], models)
+plt.ylim(0, 1)
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+# Probabilities
+y_proba_knn = grid.predict_proba(X_test)[:, 1]
+y_proba_rf = grid_rf.predict_proba(X_test)[:, 1]
+
+#Curve
+fpr_knn, tpr_knn, _ = roc_curve(y_test, y_proba_knn)
+fpr_rf, tpr_rf, _ = roc_curve(y_test, y_proba_rf)
+
+prec_knn, rec_knn, _ = precision_recall_curve(y_test, y_proba_knn)
+prec_rf, rec_rf, _ = precision_recall_curve(y_test, y_proba_rf)
+
+auc_knn = auc(fpr_knn, tpr_knn)
+auc_rf = auc(fpr_rf, tpr_rf)
+
+# Plot side-by-side
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+# ROC
+ax1.plot(fpr_knn, tpr_knn, label=f"KNN (AUC = {auc_knn:.2f})")
+ax1.plot(fpr_rf, tpr_rf, label=f"RF (AUC = {auc_rf:.2f})")
+ax1.plot([0, 1], [0, 1], 'k--')
+ax1.set_title("ROC Curve")
+ax1.set_xlabel("False Positive Rate")
+ax1.set_ylabel("True Positive Rate")
+ax1.legend()
+
+# PR
+ax2.plot(rec_knn, prec_knn, label="KNN")
+ax2.plot(rec_rf, prec_rf, label="Random Forest")
+ax2.set_title("Precision-Recall Curve")
+ax2.set_xlabel("Recall")
+ax2.set_ylabel("Precision")
+ax2.legend()
+
+plt.tight_layout()
+plt.show()
+
+#logic
+# Pipeline
+pipe_lr = Pipeline([
+    ('scaler', StandardScaler()),
+    ('lr', LogisticRegression(max_iter=1000))
+])
+
+# Hyperparameter grid
+param_grid_lr = {
+    'lr__C': [0.01, 0.1, 1, 10],
+    'lr__penalty': ['l2'],
+    'lr__solver': ['lbfgs']  
+}
+
+# Grid search
+grid_lr = GridSearchCV(pipe_lr, param_grid=param_grid_lr, cv=5, scoring='accuracy', verbose=1, n_jobs=-1)
+grid_lr.fit(X_train, y_train)
+
+# Predictions
+y_pred_lr = grid_lr.predict(X_test)
+y_proba_lr = grid_lr.predict_proba(X_test)[:, 1]
+
+# Evaluation
+print("Best LR params:", grid_lr.best_params_)
+print("Accuracy:", accuracy_score(y_test, y_pred_lr))
+print(confusion_matrix(y_test, y_pred_lr))
+print(classification_report(y_test, y_pred_lr))
+print("MCC:", matthews_corrcoef(y_test, y_pred_lr))
+
