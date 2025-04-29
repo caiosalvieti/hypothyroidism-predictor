@@ -62,7 +62,7 @@ sns.jointplot(data=dtt, x="TSH", y="T4U", hue="age", palette='viridis')
 
 sns.jointplot(data=dtt, x="T3", y="FTI", hue="age", palette='viridis')
 
-#plt.show()
+plt.show()
 
 #pca
 
@@ -86,7 +86,7 @@ print(pca.explained_variance_)
 
 dfScree = pd.DataFrame({'var':pca.explained_variance_ratio_,'PC':['PC1','PC2','PC3','PC4','PC5','PC6']})
 sns.barplot(x='PC',y="var",data=dfScree, color="c").set_title('Fig 2. Component Variance');
-#plt.show()
+plt.show()
 
 # Loadings
 loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
@@ -96,29 +96,29 @@ print(loadingsDF)
 # SHOW SHOW SHOW
 sns.scatterplot(data=pca_df, x='PC1', y='PC2', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.1')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC3', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.2')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC1', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.3')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC2', y='PC3', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.4')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC2', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.5')
-#plt.show()
+plt.show()
 sns.scatterplot(data=pca_df, x='PC3', y='PC4', hue='target', palette='viridis')
 plt.title('PCA - MAIN P.6')
-#plt.show()
+plt.show()
 
 correlation_matrix = dtt.corr()
 print(correlation_matrix)
 plt.figure(figsize=(8, 6))  # Adjust figure size as needed
 sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm")  # Use annot=True for values on heatmap
 plt.title("Correlation Matrix")
-#plt.show()
+plt.show()
 
 
 # Split the data into features (X) and target (y)
@@ -222,7 +222,6 @@ X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2,
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
-
 
 knn = KNeighborsClassifier(n_neighbors=3)
 knn.fit(X_train, y_train)
