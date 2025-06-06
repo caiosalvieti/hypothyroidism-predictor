@@ -445,3 +445,16 @@ print(confusion_matrix(y_test, y_pred_lr))
 print(classification_report(y_test, y_pred_lr))
 print("MCC:", matthews_corrcoef(y_test, y_pred_lr))
 
+import joblib
+joblib.dump(grid_lr.best_estimator_, "models/best_model.pkl")
+# predict.py
+import pandas as pd
+import joblib
+
+model = joblib.load("models/best_model.pkl")
+
+def predict(input_data: dict):
+    df = pd.DataFrame([input_data])
+    prediction = model.predict(df)[0]
+    prob = model.predict_proba(df)[0][1] if hasattr(model, "predict_proba") else None
+    return prediction, prob
