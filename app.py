@@ -2,7 +2,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from predicty import predicty   # nossa função de previsão
+from predicty import predicty
 
 st.set_page_config(page_title="Hypothyroidism Predictor", layout="centered")
 st.title("🩺 Hypothyroidism Diagnostic App")
@@ -12,16 +12,29 @@ Este app prevê a probabilidade de hipotireoidismo com um modelo treinado.
 Preencha os exames laboratoriais abaixo:
 """)
 
-# --- Formulário de entrada ---
+# ------- Formulário único -------
 with st.form("prediction_form"):
-    age  = st.slider("Age", 0, 100, 35)
-    T3   = st.number_input("T3",  min_value=0.0, value=1.0)
-    TT4  = st.number_input("TT4", min_value=0.0, value=100.0)
-    T4U  = st.number_input("T4U", min_value=0.0, value=1.0)
-    submit = st.form_submit_button("Predict")
+    age = st.slider("Age", 0, 100, 35)
 
-if submit:
-    input_data = {"age": age, "T3": T3, "TT4": TT4, "T4U": T4U}
+    TSH = st.number_input("TSH", min_value=0.0, value=1.2, step=0.1)
+    FTI = st.number_input("FTI", min_value=0.0, value=100.0, step=1.0)
+
+    T3  = st.number_input("T3",  min_value=0.0, value=1.0, step=0.1)
+    TT4 = st.number_input("TT4", min_value=0.0, value=100.0, step=1.0)
+    T4U = st.number_input("T4U", min_value=0.0, value=1.0, step=0.01)
+
+    submitted = st.form_submit_button("Predict")
+
+# ------- Lógica só roda se clicar -------
+if submitted:
+    input_data = {
+        "age": age,
+        "TSH": TSH,
+        "T3":  T3,
+        "TT4": TT4,
+        "T4U": T4U,
+        "FTI": FTI
+    }
 
     try:
         prediction, probability, analysis = predicty(input_data)
@@ -29,21 +42,21 @@ if submit:
         st.error(f"Erro na previsão: {e}")
         st.stop()
 
-    # --- Resultado ---
+    # Resultado
     st.subheader("📊 Prediction Result")
     if prediction == 1:
         st.error(f"Hypothyroidism (Prob: {probability:.2f})")
     else:
         st.success(f"Normal (Prob: {probability:.2f})")
 
-    # --- Análise contextual ---
+    # Análise contextual
     st.subheader("🧪 Contextual Analysis")
     for key, val in analysis.items():
         st.write(f"**{key}** → valor {val['value']:.2f} | média {val['mean']:.2f} | desvio {val['std']:.2f} | percentil {val['percentile']:.1f}%")
         if val['is_outlier']:
             st.warning(f"⚠️ {key} é outlier (±2 σ)")
 
-    # --- Histograma comparativo ---
+    # Histogramas
     st.subheader("📈 Distribution")
     ref = pd.read_csv("data/cleaned_dataset.csv")
 
