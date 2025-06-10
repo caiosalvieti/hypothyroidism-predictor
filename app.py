@@ -8,8 +8,8 @@ st.set_page_config(page_title="Hypothyroidism Predictor", layout="centered")
 st.title("🩺 Hypothyroidism Diagnostic App")
 
 st.markdown("""
-Este app prevê a probabilidade de hipotireoidismo com um modelo treinado.
-Preencha os exames laboratoriais abaixo:
+This app predicts the probability of hypothyroidism with a trained model.
+Fill in the laboratory tests below:
 """)
 
 # ------- Formulário único -------
