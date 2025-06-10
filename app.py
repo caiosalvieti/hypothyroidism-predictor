@@ -39,7 +39,7 @@ if submitted:
     try:
         prediction, probability, analysis = predicty(input_data)
     except Exception as e:
-        st.error(f"Erro na previsão: {e}")
+        st.error(f"Wrong Prediction: {e}")
         st.stop()
 
     # Resultado
@@ -52,9 +52,7 @@ if submitted:
     # Análise contextual
     st.subheader("🧪 Contextual Analysis")
     for key, val in analysis.items():
-        st.write(f"**{key}** → valor {val['value']:.2f} | média {val['mean']:.2f} | desvio {val['std']:.2f} | percentil {val['percentile']:.1f}%")
-        if val['is_outlier']:
-            st.warning(f"⚠️ {key} é outlier (±2 σ)")
+        st.write(f"**{key}** → value {val['value']:.2f} | mean {val['mean']:.2f} | std {val['std']:.2f} | percentile {val['percentile']:.1f}%")
 
     # Histogramas
     st.subheader("📈 Distribution")
