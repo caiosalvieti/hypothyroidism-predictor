@@ -3,10 +3,6 @@
 
 A Streamlit web-app + training pipeline that **analyses thyroid-hormone data, visualises PCA patterns and predicts hypothyroidism** with a 99 %-accurate Random-Forest model.
 
-<p align="center">
-  <img src="docs/screenshot_ui.png" width="640" alt="UI demo">
-</p>
-
 | Stage | File | What happens |
 |-------|------|--------------|
 | **1. Training** | `train.py` | cleans raw `hypothyroid.data`, runs GridSearchCV (KNN • RF • LogReg), saves<br>`data/cleaned_dataset.csv` + `models/best_model.pkl` |
